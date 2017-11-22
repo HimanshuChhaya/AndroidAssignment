@@ -1,13 +1,17 @@
 package com.example.himanshu.myandroidassignment;
 
 import android.app.ListActivity;
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -89,13 +93,13 @@ public class ListActivityMain extends ListActivity {
                 Log.d("MyApp", "Play Audio clicked");
                 break;
             case "Show Notification":
-
+                ShowNotification();
                 break;
         }
 
     }
 
-    private void CreateNotificationChannel()
+    private void ShowNotification()
     {
         /*NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -117,5 +121,35 @@ public class ListActivityMain extends ListActivity {
         mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
         mNotificationManager.createNotificationChannel(mChannel);*/
 
+
+        // prepare intent which is triggered if the
+        // notification is selected
+
+        //Intent intent = new Intent(this, NotificationReceiver.class);
+        // use System.currentTimeMillis() to have a unique ID for the pending intent
+        //PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
+        // build notification
+        // the addAction re-use the same intent to keep the example short
+        Notification n  = new Notification.Builder(this)
+                .setContentTitle("Message from Himanshu")
+                .setContentText("Thank you Sir. Enjoyed Your Class!")
+                .setSmallIcon(R.drawable.cloud)
+                //.setContentIntent(pIntent)
+                .setAutoCancel(true)
+                //.addAction(R.drawable.icon, "Call", pIntent)
+                //.addAction(R.drawable.icon, "More", pIntent)
+                //.addAction(R.drawable.icon, "And more", pIntent)
+                .getNotification();
+
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        try {
+            notificationManager.notify(0, n);
+        }catch (Exception ex) {
+            Log.d("MyApp", "Exception Occured!");
+        }
     }
 }
