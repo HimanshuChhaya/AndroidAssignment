@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -40,11 +42,8 @@ public class ListActivityMain extends ListActivity {
 
         setTitle("Please Choose Option");
 
-        String[] items = { "Play Audio", "Call Himanshu", "Show Notification", "Current Location", "About"};
+        String[] items = { "Play Audio", "Call Himanshu", "Show Notification", "Current Location", "Check Network", "About"};
         player = new MediaPlayer();
-//        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, items);
-//        getListView().setAdapter((ListAdapter) adapter);
-
         adapter = new ArrayAdapter<String>(getApplicationContext(),
                 android.R.layout.simple_list_item_1, items) {
             @Override
@@ -56,7 +55,6 @@ public class ListActivityMain extends ListActivity {
         };
 
         getListView().setAdapter(adapter);
-
     }
 
     @Override
@@ -95,33 +93,31 @@ public class ListActivityMain extends ListActivity {
             case "Show Notification":
                 ShowNotification();
                 break;
+            case "Check Network":
+                if (IsNetworkAvailable()) {
+                    Toast.makeText(getApplicationContext(), "Internet available", Toast.LENGTH_LONG)
+                            .show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Internet not available", Toast.LENGTH_LONG)
+                    .show();
+                }
+                break;
         }
 
     }
 
+    private Boolean IsNetworkAvailable()
+    {
+        Boolean returnValue = false;
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        returnValue = activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        return returnValue;
+    }
+
     private void ShowNotification()
     {
-        /*NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        // The id of the channel.
-        String id = "my_channel_01";
-        // The user-visible name of the channel.
-        CharSequence name = getString(R.string.channel_name);
-        // The user-visible description of the channel.
-        String description = getString(R.string.channel_description);
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        NotificationChannel mChannel = new NotificationChannel(id, name, importance);
-        // Configure the notification channel.
-        mChannel.setDescription(description);
-        mChannel.enableLights(true);
-        // Sets the notification light color for notifications posted to this
-        // channel, if the device supports this feature.
-        mChannel.setLightColor(Color.RED);
-        mChannel.enableVibration(true);
-        mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-        mNotificationManager.createNotificationChannel(mChannel);*/
-
-
         // prepare intent which is triggered if the
         // notification is selected
 
